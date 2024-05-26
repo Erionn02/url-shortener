@@ -1,26 +1,24 @@
+#include <cpprest/http_listener.h>
+#include <cpprest/http_client.h>
+
 #include <iostream>
 #include <string>
 #include <memory>
-#include <zmq.hpp>
+#include <thread>
+#include <chrono>
 
-int f(int x){
-    return x;
-}
-
-
-std::string f(std::string x){
-    return x;
-}
 
 int main() {
-    int some_data{1234567};
-    void* data = &some_data;
+    web::http::experimental::listener::http_listener listener{"http://0.0.0.0:2137"};
+    listener.support([](const web::http::http_request& request){
+        web::http::http_response response;
+        response.set_body("Hello world!.");
+        response.set_status_code(web::http::status_codes::OK);
+        request.reply(response);
+    });
+    listener.open().get();
 
-    zmq::message_t m{data,sizeof(some_data)};
-
-    auto xd = std::make_unique<uint8_t[]>(sizeof(some_data));
-    std::memcpy(xd.get(),m.data(),m.size());
-    std::cout<<std::memcmp(&some_data,xd.get(),m.size());
+    std::this_thread::sleep_for(std::chrono::seconds(std::numeric_limits<std::int64_t>::max()));
 
     return 0;
 }

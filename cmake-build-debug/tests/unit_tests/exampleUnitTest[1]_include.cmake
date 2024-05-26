@@ -1,0 +1,5 @@
+if(EXISTS "/home/kuba/CLionProjects/url-shortener/cmake-build-debug/tests/unit_tests/exampleUnitTest[1]_tests.cmake")
+  include("/home/kuba/CLionProjects/url-shortener/cmake-build-debug/tests/unit_tests/exampleUnitTest[1]_tests.cmake")
+else()
+  add_test(exampleUnitTest_NOT_BUILT exampleUnitTest_NOT_BUILT)
+endif()

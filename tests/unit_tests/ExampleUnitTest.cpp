@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "TestClass.h"
+#include "TestClass.hpp"
 
 struct ExampleUnitTest : public testing::Test {
     TestClass test;

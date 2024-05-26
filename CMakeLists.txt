@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.13)
-project(template_project) #TODO change project name
-set(CMAKE_CXX_STANDARD 20)
+project(url-shortener)
+set(CMAKE_CXX_STANDARD 23)
 
 set(CONAN_SYSTEM_INCLUDES ON)
 include(${CMAKE_SOURCE_DIR}/cmake/CMakeHelpers.cmake)

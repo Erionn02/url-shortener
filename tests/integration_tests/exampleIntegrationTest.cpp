@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
-#include "TestClass.h"
-#include "TestClass2.h"
+#include "TestClass2.hpp"
+#include "TestClass.hpp"
 
 TEST(exampleIntegrationTest, EmptyTest) {
 TestClass tc;

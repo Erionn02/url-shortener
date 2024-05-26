@@ -1,0 +1,11 @@
+services:
+#  db:
+#    image: postgres:14.5
+  reverse-proxy:
+    image: caddy:latest
+  web-server:
+    image: tmp
+    build:
+      dockerfile: ./Dockerfile
+    ports:
+      - "80:2137"
