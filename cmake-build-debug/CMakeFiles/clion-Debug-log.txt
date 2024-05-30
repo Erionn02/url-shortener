@@ -1,4 +1,4 @@
-/home/kuba/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/231.9161.40/bin/cmake/linux/x64/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/home/kuba/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/231.9161.40/bin/ninja/linux/x64/ninja -G Ninja -S /home/kuba/CLionProjects/url-shortener -B /home/kuba/CLionProjects/url-shortener/cmake-build-debug
+/home/kuba/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.7571.171/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" -S /home/kuba/CLionProjects/url-shortener -B /home/kuba/CLionProjects/url-shortener/cmake-build-debug
 -- Conan: Automatic detection of conan settings from cmake
 -- Conan: Settings= -pr=default
 -- Conan: checking conan executable
@@ -20,7 +20,6 @@ os_build=Linux
 [env]
 [conf]
 tools.system.package_manager:mode=install
-tools.system.package_manager:sudo=True
 
 WARN: boost/1.83.0: requirement zlib/[>=1.2.11 <2] overridden by cpprestsdk/2.10.19 to zlib/1.2.13 
 WARN: websocketpp/0.8.2: requirement openssl/[>=1.1 <4] overridden by cpprestsdk/2.10.19 to openssl/3.1.1 
@@ -73,8 +72,8 @@ openssl/3.1.1: Already installed!
 spdlog/1.14.0: Already installed!
 websocketpp/0.8.2: Already installed!
 cpprestsdk/2.10.19: Already installed!
-conanfile.txt: Generator txt created conanbuildinfo.txt
 conanfile.txt: Generator cmake created conanbuildinfo.cmake
+conanfile.txt: Generator txt created conanbuildinfo.txt
 conanfile.txt: Aggregating env generators
 conanfile.txt: Generated conaninfo.txt
 conanfile.txt: Generated graphinfo

@@ -1,24 +1,22 @@
-#include <cpprest/http_listener.h>
-#include <cpprest/http_client.h>
+#include "URLShortenerFactory.hpp"
 
-#include <iostream>
-#include <string>
-#include <memory>
+#include <spdlog/spdlog.h>
+
 #include <thread>
 #include <chrono>
 
+void sleepForever();
 
 int main() {
-    web::http::experimental::listener::http_listener listener{"http://0.0.0.0:2137"};
-    listener.support([](const web::http::http_request& request){
-        web::http::http_response response;
-        response.set_body("Hello world!.");
-        response.set_status_code(web::http::status_codes::OK);
-        request.reply(response);
-    });
-    listener.open().get();
+    spdlog::set_level(spdlog::level::debug);
+    std::unique_ptr<HTTPServer> url_shortener_server = URLShortenerFactory::create();
+    spdlog::info("HTTP server created");
 
-    std::this_thread::sleep_for(std::chrono::seconds(std::numeric_limits<std::int64_t>::max()));
+    url_shortener_server->open();
+    spdlog::info("HTTP server is ready to handle incoming requests");
 
+    sleepForever();
     return 0;
 }
+
+void sleepForever() { std::this_thread::sleep_for(std::chrono::seconds(std::numeric_limits<int64_t>::max())); }

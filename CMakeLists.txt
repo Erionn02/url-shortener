@@ -7,6 +7,11 @@ include(${CMAKE_SOURCE_DIR}/cmake/CMakeHelpers.cmake)
 
 setup_conan()
 
+# cpprestsdk is stupid library and uses one-letter-macros in public headers
+# which leak everywhere and cause problems for example in templates with the types named with the same letter
+# this definition turns off those ugly macros
+add_definitions(-D_TURN_OFF_PLATFORM_STRING)
+
 # Turn on with 'cmake -Dcoverage=ON ..'.
 option(coverage "Build for coverage report." OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)

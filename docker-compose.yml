@@ -7,5 +7,9 @@ services:
     image: tmp
     build:
       dockerfile: ./Dockerfile
+    environment:
+      http_bind_address: "http://127.0.0.1:2137"
+      web_files_directory: /url-shortener/web
+      main_website_filename: main.html
     ports:
       - "80:2137"
