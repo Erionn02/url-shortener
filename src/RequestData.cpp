@@ -6,14 +6,8 @@ RequestData::RequestData(web::http::http_request request)
         : request(request) {
     response.set_body("Request was not handled!");
 }
-web::http::method RequestData::getMethod() const { return request.method(); }
 
-web::json::value RequestData::getJson() {
-    if (!extracted_json.has_value()) {
-        extracted_json = request.extract_json().get();
-    }
-    return *extracted_json;
-}
+web::http::method RequestData::getMethod() const { return request.method(); }
 
 void RequestData::setResponse(web::http::http_response new_response) { response = std::move(new_response); }
 

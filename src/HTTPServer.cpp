@@ -3,9 +3,9 @@
 #include <spdlog/spdlog.h>
 
 
-HTTPServer::HTTPServer(const utility::string_t& url) : listener(url) {
+HTTPServer::HTTPServer(const utility::string_t &url) : listener(url) {
     listener.support(
-            [this] (const web::http::http_request& request) {
+            [this](const web::http::http_request &request) {
                 spdlog::debug("Got request, path: {}", request.relative_uri().path());
                 auto request_data = RequestData(request);
                 handleRequest(request_data);
@@ -16,15 +16,15 @@ HTTPServer::HTTPServer(const utility::string_t& url) : listener(url) {
 HTTPServer::~HTTPServer() {
     try {
         close();
-    } catch (const std::exception& e) {
-        spdlog::error("HTTPServer Encountered an exception during destruction: {}", e.what());
+    } catch (const std::exception &e) {
+        spdlog::error("HTTPServer encountered an exception during destruction: {}", e.what());
     } catch (...) {
-        spdlog::error("HTTPServer Encountered an exception during destruction.");
+        spdlog::error("HTTPServer encountered unknown exception during destruction.");
     }
 }
 
-void HTTPServer::handleRequest(RequestData& request) {
-    for (auto& handler: handlers) {
+void HTTPServer::handleRequest(RequestData &request) {
+    for (auto &handler: handlers) {
         if (handler->canHandle(request)) {
             handler->handle(request);
             request.reply();
@@ -34,7 +34,7 @@ void HTTPServer::handleRequest(RequestData& request) {
     handleBadRequest(request);
 }
 
-void HTTPServer::handleBadRequest(RequestData& request) {
+void HTTPServer::handleBadRequest(RequestData &request) {
     request.setResponse(web::http::status_codes::NotFound, "lol");
     request.reply();
 }

@@ -7,5 +7,4 @@
 class URLShortenerFactory {
 public:
     static std::unique_ptr<HTTPServer> create();
-
 };

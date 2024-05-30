@@ -10,8 +10,8 @@ public:
     void reply();
     void setResponse(web::http::http_response new_response);
 
-    template <typename Body>
-    void setResponse(web::http::status_code status_code, Body&& body) {
+    template<typename Body>
+    void setResponse(web::http::status_code status_code, Body &&body) {
         web::http::http_response response_local;
 
         response_local.set_status_code(status_code);
@@ -20,17 +20,15 @@ public:
     }
 
     [[nodiscard]] web::http::method getMethod() const;
-    [[nodiscard]] web::json::value getJson();
-    [[nodiscard]] web::http::http_headers& getHeaders();
-    [[nodiscard]] web::http::http_response& getResponse();
-    [[nodiscard]] web::http::http_request& getRequest();
-    [[nodiscard]] std::string tryGetHeaderValue(const std::string& name) const;
-    [[nodiscard]] std::optional<std::string> getHeaderValue(const std::string& name) const;
+    [[nodiscard]] web::http::http_headers &getHeaders();
+    [[nodiscard]] web::http::http_response &getResponse();
+    [[nodiscard]] web::http::http_request &getRequest();
+    [[nodiscard]] std::string tryGetHeaderValue(const std::string &name) const;
+    [[nodiscard]] std::optional<std::string> getHeaderValue(const std::string &name) const;
     [[nodiscard]] std::string path() const;
-private:
 
-    std::optional<web::json::value> extracted_json;
+private:
     web::http::http_request request;
-    web::http::http_response response {web::http::status_codes::BadRequest};
+    web::http::http_response response{web::http::status_codes::BadRequest};
 };
 
