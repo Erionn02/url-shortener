@@ -1,5 +1,0 @@
-if(EXISTS "/home/kuba/CLionProjects/url-shortener/cmake-build-debug/tests/integration_tests/exampleIntegrationTest[1]_tests.cmake")
-  include("/home/kuba/CLionProjects/url-shortener/cmake-build-debug/tests/integration_tests/exampleIntegrationTest[1]_tests.cmake")
-else()
-  add_test(exampleIntegrationTest_NOT_BUILT exampleIntegrationTest_NOT_BUILT)
-endif()

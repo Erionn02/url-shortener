@@ -1,9 +1,0 @@
-# ninja log v5
-1	31	1716754817135648738	src/CMakeFiles/template_lib_two.dir/TestClass2.cpp.o	747c6be0277b9d42
-23	30	1716754817135648738	lib/libtemplate_lib_one.a	e96e38edc4edff05
-31	39	1716754817143648963	lib/libtemplate_lib_two.a	986c0890dffdb16c
-1	23	1716754817127648514	src/CMakeFiles/template_lib_one.dir/TestClass.cpp.o	b65ec463a4d67120
-4	7583	1716754883697514056	apps/CMakeFiles/url-shortener.dir/main.cpp.o	b843451a89f8ae76
-7583	8081	1716754884197528045	bin/url-shortener	756b3ab76358c16f
-7726	8279	1716754749229738353	bin/template_project	f957e0c001b2b8df
-0	7723	1716754748669722561	apps/CMakeFiles/template_project.dir/main.cpp.o	69f26cb4384e80c1
