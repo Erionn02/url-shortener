@@ -1,6 +1,14 @@
 services:
-#  db:
-#    image: postgres:14.5
+  db:
+    image: postgres:14.5
+    environment:
+      POSTGRES_DB: "url-shortener"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "root"
+    volumes:
+      - ./database_schema.sql:/docker-entrypoint-initdb.d/database_schema.sql
+    healthcheck:
+      test: pg_isready
   reverse-proxy:
     image: caddy:latest
   web-server:
@@ -11,5 +19,12 @@ services:
       http_bind_address: "http://127.0.0.1:2137"
       web_files_directory: /url-shortener/web
       main_website_filename: main.html
+      POSTGRES_DB: "url-shortener"
+      POSTGRES_USERNAME: "postgres"
+      POSTGRES_PASSWORD: "root"
+      POSTGRES_ADDRESS: "db"
     ports:
       - "80:2137"
+    depends_on:
+      db:
+        condition: service_healthy
