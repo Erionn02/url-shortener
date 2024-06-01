@@ -7,5 +7,6 @@ add_lib(url-shortener-lib
         ${CMAKE_CURRENT_SOURCE_DIR}/IRequestHandler.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/URLShortenerFactory.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/FileRequestHandler.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/URLShortenerHandler.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/DatabaseManager.cpp
         )

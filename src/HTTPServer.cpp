@@ -35,7 +35,7 @@ void HTTPServer::handleRequest(RequestData &request) {
 }
 
 void HTTPServer::handleBadRequest(RequestData &request) {
-    request.setResponse(web::http::status_codes::NotFound, "lol");
+    request.setResponse(web::http::status_codes::NotFound, "Not found");
     request.reply();
 }
 

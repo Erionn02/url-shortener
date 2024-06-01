@@ -9,6 +9,8 @@ RUN conan profile update conf.tools.system.package_manager:mode=install default
 RUN conan profile update conf.tools.system.package_manager:sudo=True default
 
 WORKDIR /url-shortener
+COPY ./conanfile.txt .
+RUN conan install conanfile.txt
 COPY . .
 
 RUN mkdir build && cd build && \

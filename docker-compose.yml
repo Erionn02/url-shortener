@@ -45,7 +45,8 @@ services:
     build:
       dockerfile: ./Dockerfile
     environment:
-      http_bind_address: "http://127.0.0.1:2137"
+      http_bind_address: "http://0.0.0.0:2137"
+      domain_name: "http://127.0.0.1:2137"
       web_files_directory: /url-shortener/web
       main_website_filename: main.html
       POSTGRES_DB: "url-shortener"
@@ -53,7 +54,8 @@ services:
       POSTGRES_PASSWORD: "root"
       POSTGRES_ADDRESS: "172.26.1.2"
     ports:
-      - "80:2137" #EXPOSE PORT 80 ON YOUR ROUTER AND FORWARD TRAFFIC TO DEVICE TO MAKE THE SERVICE PUBLIC
+      - 2137:2137
+      #EXPOSE PORT 80 ON YOUR ROUTER AND FORWARD TRAFFIC TO DEVICE TO MAKE THE SERVICE PUBLIC
     networks:
       url-shortener:
         ipv4_address: 172.26.1.4
