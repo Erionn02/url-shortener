@@ -15,8 +15,6 @@ void RequestData::reply() { request.reply(response); }
 
 std::string RequestData::path() const { return request.relative_uri().path(); }
 
-web::http::http_headers& RequestData::getHeaders() { return request.headers(); }
-
 web::http::http_response& RequestData::getResponse() { return response; }
 
 std::string RequestData::tryGetHeaderValue(const std::string& name) const {
@@ -35,5 +33,3 @@ std::optional<std::string> RequestData::getHeaderValue(const std::string& name) 
     }
     return header_value;
 }
-
-web::http::http_request& RequestData::getRequest() { return request; }

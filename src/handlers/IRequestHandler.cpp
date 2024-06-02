@@ -1,6 +1,9 @@
 #include "handlers/IRequestHandler.hpp"
 
 
+IRequestHandler::IRequestHandler(web::http::method method): accepted_http_method(std::move(method)) {
+}
+
 IRequestHandler::IRequestHandler(std::set<std::string> available_path, web::http::method method)
         : accepted_http_method(std::move(method)),
           available_paths(std::move(available_path)) {}
@@ -25,8 +28,6 @@ bool IRequestHandler::canHandle(const RequestData &request_data) const {
     return shouldHandleGivenRequestMethod(request_data.getMethod()) &&
            shouldHandleGivenRequestPath(request_data.path());
 }
-
-const std::set<std::string> &IRequestHandler::getAvailablePaths() { return available_paths; }
 
 bool IRequestHandler::shouldHandleGivenRequestMethod(web::http::method method) const {
     return method == accepted_http_method;

@@ -20,9 +20,7 @@ public:
     }
 
     [[nodiscard]] web::http::method getMethod() const;
-    [[nodiscard]] web::http::http_headers &getHeaders();
     [[nodiscard]] web::http::http_response &getResponse();
-    [[nodiscard]] web::http::http_request &getRequest();
     [[nodiscard]] std::string tryGetHeaderValue(const std::string &name) const;
     [[nodiscard]] std::optional<std::string> getHeaderValue(const std::string &name) const;
     [[nodiscard]] std::string path() const;

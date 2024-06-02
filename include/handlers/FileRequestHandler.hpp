@@ -6,7 +6,7 @@
 
 class FileRequestHandler : public IRequestHandler {
 public:
-    explicit FileRequestHandler(std::filesystem::path base_dir, std::string main_website_filename);
+    FileRequestHandler(std::filesystem::path base_dir, std::string main_website_filename);
 
 private:
     void doHandle(RequestData &request_data) override;

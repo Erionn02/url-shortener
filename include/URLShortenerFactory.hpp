@@ -6,7 +6,7 @@
 #include "handlers/URLShortenerHandler.hpp"
 #include "handlers/APIVersionHandler.hpp"
 #include "handlers/URLRedirectHandler.hpp"
-#include "DatabaseManager.hpp"
+#include "PostgresDBManager.hpp"
 
 #include <memory>
 
@@ -19,5 +19,5 @@ public:
     static std::unique_ptr<URLShortenerHandler> createURLShortenerHandler();
     static std::unique_ptr<URLRedirectHandler> createURLRedirectHandler();
     static std::unique_ptr<APIVersionHandler> createAPIVersionHandler();
-    static std::shared_ptr<DatabaseManager> createDatabaseManager();
+    static std::shared_ptr<PostgresDBManager> createPostgresDatabaseManager();
 };

@@ -9,6 +9,9 @@ namespace requests {
         static inline auto URL_TO_SHORTEN_MISSING{fmt::format("Header {} is missing!", headers::URL_TO_SHORTEN)};
         static inline auto INVALID_URL{"Given url is invalid."};
         static inline auto GIVEN_URL_IS_NOT_RESPONSIVE{"Given url is not responsive."};
+        static inline auto GIVEN_CUSTOM_URL_IS_FORBIDDEN{"Given custom url is forbidden."};
+        static inline auto GIVEN_URL_ALREADY_EXISTS{"Given url already exists."};
+        static inline auto GIVEN_CUSTOM_URL_IS_TOO_LONG{"Given url custom url is too long."};
     }
 
     // URL pattern RFC 3987 compliant and I stole it from SO, but let's be honest- you would steal it too.

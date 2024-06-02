@@ -4,6 +4,7 @@
 #include <cpprest/http_client.h>
 
 #include <regex>
+#include <ranges>
 
 URLShortenerHandler::URLShortenerHandler(std::shared_ptr<DatabaseManager> db_manager, std::string server_domain_name) :
         IRequestHandler(HANDLER_URI, web::http::methods::POST),
@@ -16,10 +17,14 @@ void URLShortenerHandler::doHandle(RequestData &request_data) {
     if (!validateRequest(request_data)) {
         return;
     }
-
-    std::string new_path = shortenUrl(request_data);
-    std::string full_url = fmt::format("{}/{}", SERVER_DOMAIN_NAME, std::move(new_path));
-    request_data.setResponse(web::http::status_codes::OK, full_url);
+    try {
+        std::string new_path = shortenUrl(request_data);
+        std::string full_url = fmt::format("{}/{}", SERVER_DOMAIN_NAME, std::move(new_path));
+        request_data.setResponse(web::http::status_codes::OK, full_url);
+    } catch (const DatabaseManagerException &e) {
+        spdlog::warn("URLShortenerHandler Encountered an exception: {}", e.what());
+        request_data.setResponse(web::http::status_codes::BadRequest, e.what());
+    }
 }
 
 std::string URLShortenerHandler::shortenUrl(const RequestData &request_data) {
@@ -41,10 +46,17 @@ void URLShortenerHandler::addProtocolPrefix(std::string &url) {
 }
 
 bool URLShortenerHandler::validateRequest(RequestData &request_data) {
-    return containsRequiredHeaders(request_data) && isURLValid(request_data) && canRequestGivenURL(request_data);
+    static std::array validations{&URLShortenerHandler::containsRequiredHeader,
+                                  &URLShortenerHandler::isURLValid,
+                                  &URLShortenerHandler::canRequestGivenURL,
+                                  &URLShortenerHandler::isCustomURLPermitted
+    };
+    return std::ranges::all_of(validations, [&](const auto validation) {
+        return std::invoke(validation, this, request_data);
+    });
 }
 
-bool URLShortenerHandler::containsRequiredHeaders(RequestData &request_data) {
+bool URLShortenerHandler::containsRequiredHeader(RequestData &request_data) {
     auto url_to_shorten = request_data.getHeaderValue(requests::headers::URL_TO_SHORTEN);
     if (!url_to_shorten.has_value()) {
         request_data.setResponse(web::http::status_codes::BadRequest, requests::errors::URL_TO_SHORTEN_MISSING);
@@ -57,7 +69,7 @@ bool URLShortenerHandler::isURLValid(RequestData &) {
 //    if (!is_valid) {
 //        request_data.setResponse(web::http::status_codes::BadRequest, requests::errors::INVALID_URL);
 //    }
-//    return is_valid;
+//    return is_valid; // todo use actual regex
     return true;
 }
 
@@ -77,8 +89,22 @@ bool URLShortenerHandler::canRequestGivenURL(RequestData &request_data) {
     }
 }
 
-bool URLShortenerHandler::isURLForbidden(RequestData &) {
-    return false;
+bool URLShortenerHandler::isCustomURLPermitted(RequestData &request_data) {
+    auto requested_custom_url = request_data.getHeaderValue(requests::headers::CUSTOM_URL);
+    if (!requested_custom_url.has_value()) {
+        return true;
+    }
+
+    if (requested_custom_url->length() > MAX_CUSTOM_URL_LENGTH) {
+        request_data.setResponse(web::http::status_codes::BadRequest, requests::errors::GIVEN_CUSTOM_URL_IS_TOO_LONG);
+        return false;
+    }
+
+    bool is_forbidden = db_manager->isForbidden(*requested_custom_url);
+    if (is_forbidden) {
+        request_data.setResponse(web::http::status_codes::BadRequest, requests::errors::GIVEN_CUSTOM_URL_IS_FORBIDDEN);
+    }
+    return !is_forbidden;
 }
 
 

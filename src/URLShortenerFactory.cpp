@@ -15,14 +15,14 @@ std::unique_ptr<HTTPServer> URLShortenerFactory::create() {
     return http_server;
 }
 
-std::shared_ptr<DatabaseManager> URLShortenerFactory::createDatabaseManager() {
+std::shared_ptr<PostgresDBManager> URLShortenerFactory::createPostgresDatabaseManager() {
     auto postgres_db = getEnv(environment::POSTGRES_DB);
     auto postgres_user = getEnv(environment::POSTGRES_USER);
     auto postgres_password = getEnv(environment::POSTGRES_PASSWORD);
     auto postgres_address = getEnv(environment::POSTGRES_ADDRESS);
     spdlog::info("Creating DatabaseManager with address {} and database: {}", postgres_address, postgres_db);
 
-    return std::make_shared<DatabaseManager>(postgres_address, postgres_user, postgres_password, postgres_db);
+    return std::make_shared<PostgresDBManager>(postgres_address, postgres_user, postgres_password, postgres_db);
 }
 
 std::unique_ptr<FileRequestHandler> URLShortenerFactory::createFileRequestHandler() {
@@ -39,11 +39,11 @@ std::unique_ptr<URLShortenerHandler> URLShortenerFactory::createURLShortenerHand
     auto server_domain_name = getEnv(environment::DOMAIN_NAME);
     spdlog::info("Creating URLShortenerHandler with {} server domain.", server_domain_name);
 
-    return std::make_unique<URLShortenerHandler>(createDatabaseManager(), server_domain_name);
+    return std::make_unique<URLShortenerHandler>(createPostgresDatabaseManager(), server_domain_name);
 }
 
 std::unique_ptr<URLRedirectHandler> URLShortenerFactory::createURLRedirectHandler() {
-    return std::make_unique<URLRedirectHandler>(createDatabaseManager());
+    return std::make_unique<URLRedirectHandler>(createPostgresDatabaseManager());
 }
 
 std::unique_ptr<APIVersionHandler> URLShortenerFactory::createAPIVersionHandler() {

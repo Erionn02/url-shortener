@@ -1,6 +1,7 @@
 #include "handlers/URLRedirectHandler.hpp"
 
-URLRedirectHandler::URLRedirectHandler(std::shared_ptr<DatabaseManager> db_manager): db_manager(std::move(db_manager)) {
+URLRedirectHandler::URLRedirectHandler(std::shared_ptr<DatabaseManager> db_manager) :
+        IRequestHandler(web::http::methods::GET), db_manager(std::move(db_manager)) {
 }
 
 void URLRedirectHandler::doHandle(RequestData &request_data) {
@@ -11,5 +12,5 @@ void URLRedirectHandler::doHandle(RequestData &request_data) {
 }
 
 bool URLRedirectHandler::canHandle(const RequestData &request_data) const {
-    return db_manager->getOriginalUrl(request_data.path().substr(1)).has_value();
+    return shouldHandleGivenRequestMethod(request_data.getMethod()) && db_manager->getOriginalUrl(request_data.path().substr(1)).has_value();
 }

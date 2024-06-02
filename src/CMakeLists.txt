@@ -10,5 +10,5 @@ add_lib(url-shortener-lib
         handlers/URLShortenerHandler.cpp
         handlers/URLRedirectHandler.cpp
         handlers/APIVersionHandler.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/DatabaseManager.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/PostgresDBManager.cpp
         )
