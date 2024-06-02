@@ -1,4 +1,4 @@
-#include "URLShortenerHandler.hpp"
+#include "handlers/URLShortenerHandler.hpp"
 #include "RequestConstants.hpp"
 
 #include <cpprest/http_client.h>
@@ -6,9 +6,9 @@
 #include <regex>
 
 URLShortenerHandler::URLShortenerHandler(std::shared_ptr<DatabaseManager> db_manager, std::string server_domain_name) :
-                                                                                        IRequestHandler(HANDLER_URI, web::http::methods::POST),
-                                                                                        db_manager(std::move(db_manager)),
-                                                                                        SERVER_DOMAIN_NAME(std::move(server_domain_name)) {
+        IRequestHandler(HANDLER_URI, web::http::methods::POST),
+        db_manager(std::move(db_manager)),
+        SERVER_DOMAIN_NAME(std::move(server_domain_name)) {
 
 }
 
@@ -24,12 +24,19 @@ void URLShortenerHandler::doHandle(RequestData &request_data) {
 
 std::string URLShortenerHandler::shortenUrl(const RequestData &request_data) {
     auto url_to_shorten = request_data.tryGetHeaderValue(requests::headers::URL_TO_SHORTEN);
+    addProtocolPrefix(url_to_shorten);
     auto requested_custom_url = request_data.getHeaderValue(requests::headers::CUSTOM_URL);
     if (requested_custom_url.has_value()) {
         db_manager->shortenUrl(*requested_custom_url, url_to_shorten);
         return *requested_custom_url;
     } else {
         return db_manager->shortenUrl(url_to_shorten);
+    }
+}
+
+void URLShortenerHandler::addProtocolPrefix(std::string &url) {
+    if (!url.starts_with("http://") && !url.starts_with("https://")) {
+        url = "https://" + url;
     }
 }
 
@@ -56,16 +63,14 @@ bool URLShortenerHandler::isURLValid(RequestData &) {
 
 bool URLShortenerHandler::canRequestGivenURL(RequestData &request_data) {
     auto url_to_shorten = request_data.tryGetHeaderValue(requests::headers::URL_TO_SHORTEN);
-    if (!url_to_shorten.starts_with("https://") && !url_to_shorten.starts_with("http://")) {
-        url_to_shorten = "https://" + url_to_shorten;
-    }
+    addProtocolPrefix(url_to_shorten);
     try {
         web::http::client::http_client_config config;
         config.set_timeout(std::chrono::seconds{3});
         web::http::client::http_client client{url_to_shorten, config};
         auto response = client.request(web::http::methods::GET).get();
         return true;
-    } catch (const std::exception& e) {
+    } catch (const std::exception &e) {
         spdlog::warn("Encountered an error when requesting url ({}): {}", url_to_shorten, e.what());
         request_data.setResponse(web::http::status_codes::BadRequest, requests::errors::GIVEN_URL_IS_NOT_RESPONSIVE);
         return false;
@@ -75,5 +80,6 @@ bool URLShortenerHandler::canRequestGivenURL(RequestData &request_data) {
 bool URLShortenerHandler::isURLForbidden(RequestData &) {
     return false;
 }
+
 
 

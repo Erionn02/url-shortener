@@ -2,8 +2,10 @@
 
 #include "EnvironmentVariables.hpp"
 #include "HTTPServer.hpp"
-#include "FileRequestHandler.hpp"
-#include "URLShortenerHandler.hpp"
+#include "handlers/FileRequestHandler.hpp"
+#include "handlers/URLShortenerHandler.hpp"
+#include "handlers/APIVersionHandler.hpp"
+#include "handlers/URLRedirectHandler.hpp"
 #include "DatabaseManager.hpp"
 
 #include <memory>
@@ -15,5 +17,7 @@ public:
     static std::unique_ptr<HTTPServer> create();
     static std::unique_ptr<FileRequestHandler> createFileRequestHandler();
     static std::unique_ptr<URLShortenerHandler> createURLShortenerHandler();
+    static std::unique_ptr<URLRedirectHandler> createURLRedirectHandler();
+    static std::unique_ptr<APIVersionHandler> createAPIVersionHandler();
     static std::shared_ptr<DatabaseManager> createDatabaseManager();
 };

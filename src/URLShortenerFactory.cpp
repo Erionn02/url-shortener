@@ -8,6 +8,8 @@ std::unique_ptr<HTTPServer> URLShortenerFactory::create() {
     spdlog::info("Creating HTTP server with bind address {}", bind_address);
     auto http_server = std::make_unique<HTTPServer>(std::move(bind_address));
 
+    http_server->addHandler(createAPIVersionHandler());
+    http_server->addHandler(createURLRedirectHandler());
     http_server->addHandler(createFileRequestHandler());
     http_server->addHandler(createURLShortenerHandler());
     return http_server;
@@ -38,5 +40,13 @@ std::unique_ptr<URLShortenerHandler> URLShortenerFactory::createURLShortenerHand
     spdlog::info("Creating URLShortenerHandler with {} server domain.", server_domain_name);
 
     return std::make_unique<URLShortenerHandler>(createDatabaseManager(), server_domain_name);
+}
+
+std::unique_ptr<URLRedirectHandler> URLShortenerFactory::createURLRedirectHandler() {
+    return std::make_unique<URLRedirectHandler>(createDatabaseManager());
+}
+
+std::unique_ptr<APIVersionHandler> URLShortenerFactory::createAPIVersionHandler() {
+    return std::make_unique<APIVersionHandler>();
 }
 

@@ -16,6 +16,7 @@ private:
     bool isURLValid(RequestData &request_data);
     bool canRequestGivenURL(RequestData &request_data);
     std::string shortenUrl(const RequestData &request_data);
+    void addProtocolPrefix(std::string& url);
     bool isURLForbidden(RequestData &request_data);
 
 

@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "FileRequestHandler.hpp"
+#include "handlers/FileRequestHandler.hpp"
 
 struct FileRequestHandlerTests : public testing::Test {
 
