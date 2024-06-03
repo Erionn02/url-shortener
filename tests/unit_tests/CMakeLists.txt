@@ -8,5 +8,5 @@ package_add_test(unit_tests
         url-shortener-lib
         )
 
-target_include_directories(unit_tests PRIVATE ../mocks)
+target_include_directories(unit_tests PRIVATE ../utils)
 target_compile_definitions(unit_tests PRIVATE WEB_FILES_DIR="${CMAKE_SOURCE_DIR}/tests/asset_dir")

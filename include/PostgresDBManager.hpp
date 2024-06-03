@@ -1,6 +1,9 @@
 #include "DatabaseManager.hpp"
+#include "ObjectPool.hpp"
 
 #include <pqxx/connection>
+
+using ConnectionPool = ObjectPool<pqxx::connection>;
 
 
 class PostgresDBManager : public DatabaseManager {
@@ -15,8 +18,9 @@ public:
 private:
     std::string generateRandomString(std::size_t length);
 
+    static inline const std::size_t DEFAULT_AMOUNT_OF_CONNECTIONS{10};
     const std::size_t DEFAULT_NEW_PATH_LEN{10};
-    pqxx::connection connection;
+    ConnectionPool connection_pool;
 
     struct PreparedStatements { // to avoid sql injects
         static constexpr const char* INSERT_WITH_RANDOM_KEY{"INSERT_WITH_RANDOM_KEY"};

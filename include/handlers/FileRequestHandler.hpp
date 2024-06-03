@@ -18,7 +18,7 @@ private:
     std::filesystem::path getFileFullPath(const RequestData &request_data) const;
 
     const std::filesystem::path BASE_DIR;
-    const std::filesystem::path MAIN_WEBSITE_FILE_PATH;
+    const std::filesystem::path MAIN_WEBSITE_FILE_PATH; // todo write actual main page
 };
 
 

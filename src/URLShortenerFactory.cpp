@@ -12,6 +12,7 @@ std::unique_ptr<HTTPServer> URLShortenerFactory::create() {
     http_server->addHandler(createURLRedirectHandler());
     http_server->addHandler(createFileRequestHandler());
     http_server->addHandler(createURLShortenerHandler());
+    // todo add forbidden urls
     return http_server;
 }
 
