@@ -7,11 +7,11 @@ std::unique_ptr<HTTPServer> URLShortenerFactory::create() {
 
     spdlog::info("Creating HTTP server with bind address {}", bind_address);
     auto http_server = std::make_unique<HTTPServer>(std::move(bind_address));
-
+    auto db_manager = createPostgresDatabaseManager();
     http_server->addHandler(createAPIVersionHandler());
-    http_server->addHandler(createURLRedirectHandler());
+    http_server->addHandler(createURLRedirectHandler(db_manager));
     http_server->addHandler(createFileRequestHandler());
-    http_server->addHandler(createURLShortenerHandler());
+    http_server->addHandler(createURLShortenerHandler(db_manager));
     // todo add forbidden urls
     return http_server;
 }
@@ -36,15 +36,15 @@ std::unique_ptr<FileRequestHandler> URLShortenerFactory::createFileRequestHandle
     return file_request_handler;
 }
 
-std::unique_ptr<URLShortenerHandler> URLShortenerFactory::createURLShortenerHandler() {
+std::unique_ptr<URLShortenerHandler> URLShortenerFactory::createURLShortenerHandler(std::shared_ptr<PostgresDBManager> db_manager) {
     auto server_domain_name = getEnv(environment::DOMAIN_NAME);
     spdlog::info("Creating URLShortenerHandler with {} server domain.", server_domain_name);
 
-    return std::make_unique<URLShortenerHandler>(createPostgresDatabaseManager(), server_domain_name);
+    return std::make_unique<URLShortenerHandler>(std::move(db_manager), server_domain_name);
 }
 
-std::unique_ptr<URLRedirectHandler> URLShortenerFactory::createURLRedirectHandler() {
-    return std::make_unique<URLRedirectHandler>(createPostgresDatabaseManager());
+std::unique_ptr<URLRedirectHandler> URLShortenerFactory::createURLRedirectHandler(std::shared_ptr<PostgresDBManager> db_manager) {
+    return std::make_unique<URLRedirectHandler>(std::move(db_manager));
 }
 
 std::unique_ptr<APIVersionHandler> URLShortenerFactory::createAPIVersionHandler() {

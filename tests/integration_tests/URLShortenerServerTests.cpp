@@ -16,12 +16,21 @@ struct URLShortenerServerTests : public Test {
     std::unique_ptr<HTTPServer> url_shortener_server;
 
     void SetUp() override {
+        clearDatabase();
         url_shortener_server = URLShortenerFactory::create();
         url_shortener_server->open();
     }
 
     void TearDown() override {
         clearDatabase();
+    }
+
+    web::http::http_request createRequestWithCustomURL() {
+        web::http::http_request request{web::http::methods::POST};
+        request.set_request_uri(URLShortenerHandler::HANDLER_URI);
+        request.headers().add(requests::headers::URL_TO_SHORTEN, EXAMPLE_URL_TO_SHORTEN);
+        request.headers().add(requests::headers::CUSTOM_URL, EXAMPLE_CUSTOM_PATH);
+        return request;
     }
 };
 
@@ -74,11 +83,7 @@ TEST_F(URLShortenerServerTests, canShortenURLToCustomAndThenRetrieveOriginal) {
     config.set_max_redirects(0);
     web::http::client::http_client client{envs.SERVER_ADDRESS, config};
 
-    web::http::http_request request{web::http::methods::POST};
-    request.set_request_uri(URLShortenerHandler::HANDLER_URI);
-    request.headers().add(requests::headers::URL_TO_SHORTEN, EXAMPLE_URL_TO_SHORTEN);
-    request.headers().add(requests::headers::CUSTOM_URL, EXAMPLE_CUSTOM_PATH);
-    auto response = client.request(request).get();
+    auto response = client.request(createRequestWithCustomURL()).get();
 
     ASSERT_EQ(response.status_code(), web::http::status_codes::OK);
     auto shortened_version = response.extract_string().get();
@@ -90,4 +95,14 @@ TEST_F(URLShortenerServerTests, canShortenURLToCustomAndThenRetrieveOriginal) {
 
     // returns original url
     ASSERT_EQ(response.headers().find("Location")->second, EXAMPLE_URL_TO_SHORTEN);
+}
+
+TEST_F(URLShortenerServerTests, badRequestWhenTriesToShortenTwiceToTheSamePath) {
+    web::http::client::http_client client{envs.SERVER_ADDRESS,};
+
+    auto response = client.request(createRequestWithCustomURL()).get();
+
+    ASSERT_EQ(response.status_code(), web::http::status_codes::OK);
+    response = client.request(createRequestWithCustomURL()).get();
+    ASSERT_EQ(response.status_code(), web::http::status_codes::BadRequest);
 }

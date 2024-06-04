@@ -2,6 +2,7 @@ package_add_test(integration_tests
         SOURCES
         URLShortenerServerTests.cpp
         URLShortenerFactoryTests.cpp
+        DatabaseManagerTests.cpp
         DEPENDS
         url-shortener-lib
         )

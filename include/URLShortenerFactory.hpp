@@ -16,8 +16,8 @@ class URLShortenerFactory {
 public:
     static std::unique_ptr<HTTPServer> create();
     static std::unique_ptr<FileRequestHandler> createFileRequestHandler();
-    static std::unique_ptr<URLShortenerHandler> createURLShortenerHandler();
-    static std::unique_ptr<URLRedirectHandler> createURLRedirectHandler();
+    static std::unique_ptr<URLShortenerHandler> createURLShortenerHandler(std::shared_ptr<PostgresDBManager> db_manager);
+    static std::unique_ptr<URLRedirectHandler> createURLRedirectHandler(std::shared_ptr<PostgresDBManager> db_manager);
     static std::unique_ptr<APIVersionHandler> createAPIVersionHandler();
     static std::shared_ptr<PostgresDBManager> createPostgresDatabaseManager();
 };

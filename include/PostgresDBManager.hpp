@@ -19,7 +19,8 @@ private:
     std::string generateRandomString(std::size_t length);
 
     static inline const std::size_t DEFAULT_AMOUNT_OF_CONNECTIONS{10};
-    const std::size_t DEFAULT_NEW_PATH_LEN{10};
+    std::size_t current_new_random_path_len{8};
+
     ConnectionPool connection_pool;
 
     struct PreparedStatements { // to avoid sql injects
