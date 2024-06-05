@@ -13,7 +13,6 @@ private:
     void doHandle(RequestData &request_data) override;
     bool validateRequest(RequestData &request_data);
     bool containsRequiredHeader(RequestData &request_data);
-    bool isURLValid(RequestData &request_data);
     bool isURLDomainNotThisServersDomain(RequestData &request_data);
     bool canRequestGivenURL(RequestData &request_data);
     std::string shortenUrl(const RequestData &request_data);

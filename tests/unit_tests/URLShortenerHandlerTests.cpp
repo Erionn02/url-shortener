@@ -12,7 +12,7 @@ using namespace ::testing;
 
 
 struct URLShortenerHandlerTests : public Test {
-    std::string server_dummy_host{"localhost"};
+    std::string server_dummy_host{"www.this_is_dummy_host.com:3451"};
     std::shared_ptr<DatabaseManagerMock> db_mock{std::make_shared<DatabaseManagerMock>()};
     URLShortenerHandler handler{db_mock, server_dummy_host};
     web::http::http_request default_request{web::http::methods::POST};
@@ -56,7 +56,7 @@ TEST_F(URLShortenerHandlerTests, badRequestWhenURLToShortenIsNotAProperURL) {
     handler.handle(request_wrapper);
 
     ASSERT_EQ(request_wrapper.getResponse().status_code(), web::http::status_codes::BadRequest);
-    ASSERT_EQ(request_wrapper.getResponse().extract_string().get(), requests::errors::INVALID_URL);
+    ASSERT_EQ(request_wrapper.getResponse().extract_string().get(), requests::errors::GIVEN_URL_IS_INVALID_OR_NOT_RESPONSIVE);
 }
 
 TEST_F(URLShortenerHandlerTests, badRequestWhenURLToShortenIsValidButUnresponsive) {
@@ -65,7 +65,7 @@ TEST_F(URLShortenerHandlerTests, badRequestWhenURLToShortenIsValidButUnresponsiv
     handler.handle(request_wrapper);
 
     ASSERT_EQ(request_wrapper.getResponse().status_code(), web::http::status_codes::BadRequest);
-    ASSERT_EQ(request_wrapper.getResponse().extract_string().get(), requests::errors::GIVEN_URL_IS_NOT_RESPONSIVE);
+    ASSERT_EQ(request_wrapper.getResponse().extract_string().get(), requests::errors::GIVEN_URL_IS_INVALID_OR_NOT_RESPONSIVE);
 }
 
 TEST_F(URLShortenerHandlerTests, OKWhenURLIsOK) {

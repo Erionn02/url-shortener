@@ -58,7 +58,6 @@ void URLShortenerHandler::addProtocolPrefix(std::string &url) {
 
 bool URLShortenerHandler::validateRequest(RequestData &request_data) {
     static std::array validations{&URLShortenerHandler::containsRequiredHeader,
-                                  &URLShortenerHandler::isURLValid,
                                   &URLShortenerHandler::isURLDomainNotThisServersDomain,
                                   &URLShortenerHandler::canRequestGivenURL,
                                   &URLShortenerHandler::isCustomPathPermitted
@@ -76,15 +75,6 @@ bool URLShortenerHandler::containsRequiredHeader(RequestData &request_data) {
     return url_to_shorten.has_value();
 }
 
-bool URLShortenerHandler::isURLValid(RequestData &) {
-//    bool is_valid = std::regex_match(request_data.tryGetHeaderValue(requests::headers::URL_TO_SHORTEN), requests::URL_VALIDATOR);
-//    if (!is_valid) {
-//        request_data.setResponse(web::http::status_codes::BadRequest, requests::errors::INVALID_URL);
-//    }
-//    return is_valid; // todo use actual regex
-    return true;
-}
-
 bool URLShortenerHandler::canRequestGivenURL(RequestData &request_data) {
     auto url_to_shorten = request_data.tryGetHeaderValue(requests::headers::URL_TO_SHORTEN);
     addProtocolPrefix(url_to_shorten);
@@ -95,9 +85,9 @@ bool URLShortenerHandler::canRequestGivenURL(RequestData &request_data) {
         web::http::client::http_client client{url_to_shorten, config};
         auto response = client.request(web::http::methods::GET).get();
         return true;
-    } catch (const std::exception &e) {
+    } catch (const web::http::http_exception &e) {
         spdlog::warn("Encountered an error when requesting url ({}): {}", url_to_shorten, e.what());
-        request_data.setResponse(web::http::status_codes::BadRequest, requests::errors::GIVEN_URL_IS_NOT_RESPONSIVE);
+        request_data.setResponse(web::http::status_codes::BadRequest, requests::errors::GIVEN_URL_IS_INVALID_OR_NOT_RESPONSIVE);
         return false;
     }
 }
