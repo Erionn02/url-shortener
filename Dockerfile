@@ -14,6 +14,6 @@ RUN conan install conanfile.txt
 COPY . .
 
 RUN mkdir build && cd build && \
-    cmake -DCMAKE_BUILD_TYPE=Debug .. && cmake --build . -- -j $(nproc --all)
+    cmake -DCMAKE_BUILD_TYPE=Debug .. && cmake --build . -t url-shortener -- -j $(nproc --all)
 
 CMD ["./build/bin/url-shortener"]

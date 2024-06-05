@@ -36,18 +36,18 @@ TEST_F(DatabaseManagerTests, doesNotReturnURLOnNonExistentShortenedPath) {
 }
 
 TEST_F(DatabaseManagerTests, URLIsForbiddenWhenAdded) {
-    ASSERT_EQ(getAmountOfEntriesInTable("forbidden_urls"), 0);
+    ASSERT_EQ(getAmountOfEntriesInTable("forbidden_paths"), 0);
     ASSERT_FALSE(db_manager->isForbidden(EXAMPLE_CUSTOM_PATH));
     db_manager->addForbiddenPath(EXAMPLE_CUSTOM_PATH);
-    ASSERT_EQ(getAmountOfEntriesInTable("forbidden_urls"), 1);
+    ASSERT_EQ(getAmountOfEntriesInTable("forbidden_paths"), 1);
     ASSERT_TRUE(db_manager->isForbidden(EXAMPLE_CUSTOM_PATH));
 }
 
 TEST_F(DatabaseManagerTests, doesNotThrowWhenTriedToAddTheSameForbidenURLTwice) {
     db_manager->addForbiddenPath(EXAMPLE_CUSTOM_PATH);
-    ASSERT_EQ(getAmountOfEntriesInTable("forbidden_urls"), 1);
+    ASSERT_EQ(getAmountOfEntriesInTable("forbidden_paths"), 1);
     ASSERT_NO_THROW(db_manager->addForbiddenPath(EXAMPLE_CUSTOM_PATH));
-    ASSERT_EQ(getAmountOfEntriesInTable("forbidden_urls"), 1);
+    ASSERT_EQ(getAmountOfEntriesInTable("forbidden_paths"), 1);
 }
 
 TEST_F(DatabaseManagerTests, canShortenURLAndRetrieve) {
@@ -70,5 +70,10 @@ TEST_F(DatabaseManagerTests, canShortenURLToCustomPathAndRetrieve) {
 
 TEST_F(DatabaseManagerTests, cannotUseTheSamePathTwice) {
     db_manager->shortenUrl(EXAMPLE_CUSTOM_PATH, EXAMPLE_URL_TO_SHORTEN);
+    ASSERT_THROW(db_manager->shortenUrl(EXAMPLE_CUSTOM_PATH, EXAMPLE_URL_TO_SHORTEN), DatabaseManagerException);
+}
+
+TEST_F(DatabaseManagerTests, cannotShortenURLToForbiddenPath) {
+    db_manager->addForbiddenPath(EXAMPLE_CUSTOM_PATH);
     ASSERT_THROW(db_manager->shortenUrl(EXAMPLE_CUSTOM_PATH, EXAMPLE_URL_TO_SHORTEN), DatabaseManagerException);
 }

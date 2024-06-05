@@ -15,6 +15,8 @@
 class URLShortenerFactory {
 public:
     static std::unique_ptr<HTTPServer> create();
+    static void addAllForbiddenPaths(PostgresDBManager& db_manager);
+    static std::unique_ptr<HTTPServer> create(std::shared_ptr<PostgresDBManager> db_manager);
     static std::unique_ptr<FileRequestHandler> createFileRequestHandler();
     static std::unique_ptr<URLShortenerHandler> createURLShortenerHandler(std::shared_ptr<PostgresDBManager> db_manager);
     static std::unique_ptr<URLRedirectHandler> createURLRedirectHandler(std::shared_ptr<PostgresDBManager> db_manager);

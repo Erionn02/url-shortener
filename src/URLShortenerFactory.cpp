@@ -3,16 +3,26 @@
 #include <spdlog/spdlog.h>
 
 std::unique_ptr<HTTPServer> URLShortenerFactory::create() {
+    auto db_manager = createPostgresDatabaseManager();
+    addAllForbiddenPaths(*db_manager);
+    return create(std::move(db_manager));
+}
+
+void URLShortenerFactory::addAllForbiddenPaths(PostgresDBManager &db_manager) {
+    db_manager.addForbiddenPath(APIVersionHandler::HANDLER_URI);
+    db_manager.addForbiddenPath(URLShortenerHandler::HANDLER_URI);
+}
+
+std::unique_ptr<HTTPServer> URLShortenerFactory::create(std::shared_ptr<PostgresDBManager> db_manager) {
     auto bind_address = getEnv(environment::HTTP_BIND_ADDRESS);
 
     spdlog::info("Creating HTTP server with bind address {}", bind_address);
     auto http_server = std::make_unique<HTTPServer>(std::move(bind_address));
-    auto db_manager = createPostgresDatabaseManager();
     http_server->addHandler(createAPIVersionHandler());
     http_server->addHandler(createURLRedirectHandler(db_manager));
     http_server->addHandler(createFileRequestHandler());
     http_server->addHandler(createURLShortenerHandler(db_manager));
-    // todo add forbidden urls
+
     return http_server;
 }
 
@@ -50,4 +60,3 @@ std::unique_ptr<URLRedirectHandler> URLShortenerFactory::createURLRedirectHandle
 std::unique_ptr<APIVersionHandler> URLShortenerFactory::createAPIVersionHandler() {
     return std::make_unique<APIVersionHandler>();
 }
-

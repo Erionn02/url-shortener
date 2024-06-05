@@ -24,8 +24,7 @@ private:
     ConnectionPool connection_pool;
 
     struct PreparedStatements { // to avoid sql injects
-        static constexpr const char* INSERT_WITH_RANDOM_KEY{"INSERT_WITH_RANDOM_KEY"};
-        static constexpr const char* INSERT_WITH_SPECIFIED_KEY{"INSERT_WITH_SPECIFIED_KEY"};
+        static constexpr const char* INSERT_URL{"INSERT_URL"};
         static constexpr const char* GET_ORIGINAL_URL{"GET_ORIGINAL_URL"};
         static constexpr const char* IS_PATH_FORBIDDEN{"IS_PATH_FORBIDDEN"};
         static constexpr const char* ADD_FORBIDDEN_PATH{"ADD_FORBIDDEN_PATH"};

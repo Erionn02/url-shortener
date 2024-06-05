@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS forbidden_urls(
+CREATE TABLE IF NOT EXISTS forbidden_paths(
                                              shortened_version TEXT NOT NULL PRIMARY KEY
 );
 

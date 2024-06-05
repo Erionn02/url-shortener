@@ -17,6 +17,6 @@ inline void clearDatabase() {
     pqxx::connection conn{getConnection()};
     pqxx::work work{conn};
     work.exec("DELETE FROM urls;");
-    work.exec("DELETE FROM forbidden_urls;");
+    work.exec("DELETE FROM forbidden_paths;");
     work.commit();
 }

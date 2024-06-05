@@ -25,12 +25,16 @@ struct URLShortenerServerTests : public Test {
         clearDatabase();
     }
 
-    web::http::http_request createRequestWithCustomURL() {
+    web::http::http_request createRequestWithCustomPath(const std::string& custom_path) {
         web::http::http_request request{web::http::methods::POST};
         request.set_request_uri(URLShortenerHandler::HANDLER_URI);
         request.headers().add(requests::headers::URL_TO_SHORTEN, EXAMPLE_URL_TO_SHORTEN);
-        request.headers().add(requests::headers::CUSTOM_URL, EXAMPLE_CUSTOM_PATH);
+        request.headers().add(requests::headers::CUSTOM_PATH, custom_path);
         return request;
+    }
+
+    web::http::http_request createRequestWithCustomPath() {
+        return createRequestWithCustomPath(EXAMPLE_CUSTOM_PATH);
     }
 };
 
@@ -83,7 +87,7 @@ TEST_F(URLShortenerServerTests, canShortenURLToCustomAndThenRetrieveOriginal) {
     config.set_max_redirects(0);
     web::http::client::http_client client{envs.SERVER_ADDRESS, config};
 
-    auto response = client.request(createRequestWithCustomURL()).get();
+    auto response = client.request(createRequestWithCustomPath()).get();
 
     ASSERT_EQ(response.status_code(), web::http::status_codes::OK);
     auto shortened_version = response.extract_string().get();
@@ -98,11 +102,42 @@ TEST_F(URLShortenerServerTests, canShortenURLToCustomAndThenRetrieveOriginal) {
 }
 
 TEST_F(URLShortenerServerTests, badRequestWhenTriesToShortenTwiceToTheSamePath) {
-    web::http::client::http_client client{envs.SERVER_ADDRESS,};
+    web::http::client::http_client client{envs.SERVER_ADDRESS};
 
-    auto response = client.request(createRequestWithCustomURL()).get();
+    auto response = client.request(createRequestWithCustomPath()).get();
 
     ASSERT_EQ(response.status_code(), web::http::status_codes::OK);
-    response = client.request(createRequestWithCustomURL()).get();
+    response = client.request(createRequestWithCustomPath()).get();
     ASSERT_EQ(response.status_code(), web::http::status_codes::BadRequest);
+}
+
+TEST_F(URLShortenerServerTests, badRequestWhenTriesToShortenURLToForbiddenPath) {
+    web::http::client::http_client client{envs.SERVER_ADDRESS};
+
+    for (const auto& forbidden_path: {APIVersionHandler::HANDLER_URI, URLShortenerHandler::HANDLER_URI}) {
+        auto response = client.request(createRequestWithCustomPath(forbidden_path)).get();
+        ASSERT_EQ(response.status_code(), web::http::status_codes::BadRequest);
+    }
+}
+
+TEST_F(URLShortenerServerTests, badRequestWhenTriesToShortenURLThatLeadsToThisServer) {
+    web::http::client::http_client client{envs.SERVER_ADDRESS};
+    web::http::http_request request{web::http::methods::POST};
+    request.set_request_uri(URLShortenerHandler::HANDLER_URI);
+    request.headers().add(requests::headers::URL_TO_SHORTEN, envs.SERVER_DOMAIN);
+
+    auto response = client.request(request).get();
+
+    ASSERT_EQ(response.status_code(), web::http::status_codes::BadRequest);
+    ASSERT_EQ(response.extract_string().get(), requests::errors::URL_TO_SHORTEN_CANNOT_LEAD_TO_THIS_SERVER);
+}
+
+TEST_F(URLShortenerServerTests, notFoundOnNonExistentURL) {
+    web::http::client::http_client client{envs.SERVER_ADDRESS};
+    web::http::http_request request{web::http::methods::GET};
+    request.set_request_uri("wergnuwegwegwegwebsdbdsb");
+
+    auto response = client.request(request).get();
+
+    ASSERT_EQ(response.status_code(), web::http::status_codes::NotFound);
 }
