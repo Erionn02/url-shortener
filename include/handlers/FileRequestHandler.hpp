@@ -13,7 +13,6 @@ private:
     void validateDirectory(const std::filesystem::path &directory);
     std::set<std::string> getFilesInDirectory(const std::filesystem::path &directory);
     std::set<std::string> getHandledPaths(const std::filesystem::path &directory);
-    std::string readFileContent(const std::filesystem::path &file_path);
     std::string recognizeContentType(const std::filesystem::path &file_path);
     std::filesystem::path getFileFullPath(const RequestData &request_data) const;
 

@@ -6,7 +6,7 @@
 
 struct FileRequestHandlerTests : public testing::Test {
     std::filesystem::path path{WEB_FILES_DIR};
-    std::string main_website_filename{WEB_FILES_DIR "/main.html"};
+    std::string main_website_filename{WEB_FILES_DIR "/index.html"};
 
     void TearDown() override {
         if (path != WEB_FILES_DIR) {

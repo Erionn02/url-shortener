@@ -4,6 +4,7 @@
 #include "URLShortenerFactory.hpp"
 #include "RAIIEnvs.hpp"
 #include "DatabaseUtils.hpp"
+#include "Utils.hpp"
 
 #include <cpprest/http_client.h>
 
@@ -49,14 +50,14 @@ TEST_F(URLShortenerServerTests, canRequestMainPage) {
     web::http::client::http_client client{envs.SERVER_ADDRESS};
     auto response = client.request(web::http::methods::GET).get();
 
-    ASSERT_TRUE(response.extract_string().get().starts_with("<!doctype html>"));
+    ASSERT_EQ(response.extract_string().get(), utils::readFileContent(WEB_FILES_DIR"/index.html"));
 }
 
 TEST_F(URLShortenerServerTests, canRequestMainPageExplicitly) {
     web::http::client::http_client client{envs.SERVER_ADDRESS};
-    auto response = client.request(web::http::methods::GET, "/main.html").get();
+    auto response = client.request(web::http::methods::GET, "/index.html").get();
 
-    ASSERT_TRUE(response.extract_string().get().starts_with("<!doctype html>"));
+    ASSERT_EQ(response.extract_string().get(), utils::readFileContent(WEB_FILES_DIR"/index.html"));
 }
 
 TEST_F(URLShortenerServerTests, canShortenURLAndThenRetrieveOriginal) {
@@ -140,4 +141,5 @@ TEST_F(URLShortenerServerTests, notFoundOnNonExistentURL) {
     auto response = client.request(request).get();
 
     ASSERT_EQ(response.status_code(), web::http::status_codes::NotFound);
+    ASSERT_EQ(response.extract_string().get(), utils::readFileContent(WEB_FILES_DIR"/404.html"));
 }

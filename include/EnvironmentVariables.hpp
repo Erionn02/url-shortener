@@ -15,7 +15,6 @@ inline std::string getEnv(const std::string &env_name) {
 namespace environment {
     static constexpr const char *HTTP_BIND_ADDRESS{"http_bind_address"};
     static constexpr const char *WEB_FILES_DIRECTORY{"web_files_directory"};
-    static constexpr const char *MAIN_WEBSITE_FILENAME{"main_website_filename"};
     static constexpr const char *DOMAIN_NAME{"domain_name"};
     static constexpr const char *POSTGRES_DB{"POSTGRES_DB"};
     static constexpr const char *POSTGRES_USER{"POSTGRES_USER"};

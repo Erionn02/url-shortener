@@ -11,6 +11,10 @@ std::unique_ptr<HTTPServer> URLShortenerFactory::create() {
 void URLShortenerFactory::addAllForbiddenPaths(PostgresDBManager &db_manager) {
     db_manager.addForbiddenPath(APIVersionHandler::HANDLER_URI);
     db_manager.addForbiddenPath(URLShortenerHandler::HANDLER_URI);
+    auto web_files_directory = getEnv(environment::WEB_FILES_DIRECTORY);
+    for(const auto& dir_entry: std::filesystem::directory_iterator(web_files_directory)) {
+        db_manager.addForbiddenPath(dir_entry.path().filename().string());
+    }
 }
 
 std::unique_ptr<HTTPServer> URLShortenerFactory::create(std::shared_ptr<PostgresDBManager> db_manager) {
@@ -22,6 +26,7 @@ std::unique_ptr<HTTPServer> URLShortenerFactory::create(std::shared_ptr<Postgres
     http_server->addHandler(createURLRedirectHandler(db_manager));
     http_server->addHandler(createFileRequestHandler());
     http_server->addHandler(createURLShortenerHandler(db_manager));
+    http_server->addHandler(createNotFoundHandler());
 
     return http_server;
 }
@@ -38,7 +43,7 @@ std::shared_ptr<PostgresDBManager> URLShortenerFactory::createPostgresDatabaseMa
 
 std::unique_ptr<FileRequestHandler> URLShortenerFactory::createFileRequestHandler() {
     auto web_files_directory = getEnv(environment::WEB_FILES_DIRECTORY);
-    auto main_website_filename = getEnv(environment::MAIN_WEBSITE_FILENAME);
+    auto main_website_filename = web_files_directory + "/index.html";
     spdlog::info("Creating FileRequestHandler with {} web files directory and main website filename: {}.",
                  web_files_directory, main_website_filename);
     auto file_request_handler = std::make_unique<FileRequestHandler>(std::move(web_files_directory),
@@ -59,4 +64,11 @@ std::unique_ptr<URLRedirectHandler> URLShortenerFactory::createURLRedirectHandle
 
 std::unique_ptr<APIVersionHandler> URLShortenerFactory::createAPIVersionHandler() {
     return std::make_unique<APIVersionHandler>();
+}
+
+std::unique_ptr<NotFoundHandler> URLShortenerFactory::createNotFoundHandler() {
+    auto web_files_directory = getEnv(environment::WEB_FILES_DIRECTORY);
+    auto not_found_file = web_files_directory + "/404.html";
+    spdlog::info("Creating NotFoundHandler with {} not found filename.", not_found_file);
+    return std::make_unique<NotFoundHandler>(std::move(not_found_file));
 }

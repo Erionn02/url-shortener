@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Shortener</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="container">
+    <h1>URL Shortener</h1>
+    <form id="shortenForm">
+        <label for="url">Enter URL to shorten:</label>
+        <input type="text" id="url" name="url" required>
+
+        <label for="customPath">Custom Path (optional):</label>
+        <input type="text" id="customPath" name="customPath">
+
+        <button type="submit">Shorten URL</button>
+    </form>
+
+    <div id="result" class="hidden">
+        <h2>Shortened URL:</h2>
+        <p id="shortenedUrl"></p>
+    </div>
+
+    <div id="error" class="hidden">
+        <h2>Error:</h2>
+        <p id="errorMessage"></p>
+    </div>
+</div>
+
+<div class="background-animation">
+    <div class="animation-item"></div>
+    <div class="animation-item"></div>
+    <div class="animation-item"></div>
+    <div class="animation-item"></div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

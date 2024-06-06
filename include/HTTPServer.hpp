@@ -24,7 +24,6 @@ public:
 private:
     void handleRequest(RequestData &request);
     void checkAnyHandlerExists() const;
-    void handleBadRequest(RequestData &request);
 
     std::vector<std::unique_ptr<IRequestHandler>> handlers;
     web::http::experimental::listener::http_listener listener;

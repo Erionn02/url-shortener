@@ -50,8 +50,7 @@ services:
     environment:
       http_bind_address: "http://0.0.0.0:2137"
       domain_name: "http://127.0.0.1:2137"
-      web_files_directory: /url-shortener/web
-      main_website_filename: main.html
+      web_files_directory: /web_files
       POSTGRES_DB: "url-shortener"
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "root"
@@ -65,6 +64,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    volumes:
+      - ./web:/web_files
 
   reverse-proxy:
     image: caddy:latest

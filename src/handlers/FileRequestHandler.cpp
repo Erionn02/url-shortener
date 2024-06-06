@@ -1,6 +1,5 @@
 #include "handlers/FileRequestHandler.hpp"
-
-#include <fstream>
+#include "Utils.hpp"
 
 
 FileRequestHandler::FileRequestHandler(std::filesystem::path base_dir, std::string main_website_filename)
@@ -45,7 +44,7 @@ void FileRequestHandler::doHandle(RequestData &request_data) {
     std::filesystem::path full_path = getFileFullPath(request_data);
     web::http::http_response response;
     response.headers().set_content_type(recognizeContentType(full_path));
-    auto body = readFileContent(full_path);
+    auto body = utils::readFileContent(full_path);
     response.headers().set_content_length(body.size());
     response.set_body(std::move(body));
     response.set_status_code(web::http::status_codes::OK);
@@ -59,13 +58,6 @@ std::filesystem::path FileRequestHandler::getFileFullPath(const RequestData &req
         return BASE_DIR / MAIN_WEBSITE_FILE_PATH;
     }
     return BASE_DIR.string() + filename_to_read;
-}
-
-std::string FileRequestHandler::readFileContent(const std::filesystem::path &file_path) {
-    std::ifstream file{file_path};
-    std::stringstream ss;
-    ss << file.rdbuf();
-    return ss.str();
 }
 
 std::string FileRequestHandler::recognizeContentType(const std::filesystem::path &file_path) {

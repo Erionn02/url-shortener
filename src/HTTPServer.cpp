@@ -31,12 +31,6 @@ void HTTPServer::handleRequest(RequestData &request) {
             return;
         }
     }
-    handleBadRequest(request);
-}
-
-void HTTPServer::handleBadRequest(RequestData &request) {
-    request.setResponse(web::http::status_codes::NotFound, "Not found"); // todo add not found page
-    request.reply();
 }
 
 void HTTPServer::addHandler(

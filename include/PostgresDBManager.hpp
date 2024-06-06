@@ -15,12 +15,10 @@ public:
     std::optional<std::string> getOriginalUrl(const std::string& shortened_path) override;
     bool isForbidden(const std::string& new_path) override;
     void addForbiddenPath(const std::string &forbidden_path) override;
-private:
-    std::string generateRandomString(std::size_t length);
 
+private:
     static inline const std::size_t DEFAULT_AMOUNT_OF_CONNECTIONS{10};
     std::size_t current_new_random_path_len{8};
-
     ConnectionPool connection_pool;
 
     struct PreparedStatements { // to avoid sql injects

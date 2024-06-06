@@ -5,7 +5,6 @@ struct RAIIEnvs{
     RAIIEnvs() {
         setenv(environment::HTTP_BIND_ADDRESS, SERVER_ADDRESS.c_str(), 1);
         setenv(environment::WEB_FILES_DIRECTORY, WEB_FILES_DIR, 1);
-        setenv(environment::MAIN_WEBSITE_FILENAME, "main.html", 1);
         setenv(environment::DOMAIN_NAME, SERVER_DOMAIN.c_str(), 1);
         setenv(environment::POSTGRES_DB, "url-shortener", 1);
         setenv(environment::POSTGRES_USER, "postgres", 1);
@@ -16,7 +15,6 @@ struct RAIIEnvs{
     ~RAIIEnvs() {
         unsetenv(environment::HTTP_BIND_ADDRESS);
         unsetenv(environment::WEB_FILES_DIRECTORY);
-        unsetenv(environment::MAIN_WEBSITE_FILENAME);
         unsetenv(environment::DOMAIN_NAME);
         unsetenv(environment::POSTGRES_DB);
         unsetenv(environment::POSTGRES_USER);

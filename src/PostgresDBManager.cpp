@@ -1,10 +1,10 @@
 #include "PostgresDBManager.hpp"
+#include "Utils.hpp"
 
 #include <fmt/format.h>
+#include <spdlog/spdlog.h>
 #include <pqxx/transaction>
 
-#include <random>
-#include <spdlog/spdlog.h>
 
 PostgresDBManager::PostgresDBManager(const std::string &database_address, const std::string &pg_user,
                                      const std::string &pg_password, const std::string &database_name) :
@@ -28,7 +28,7 @@ std::string PostgresDBManager::shortenUrl(const std::string &url_to_shorten) {
     pqxx::work transaction{*connection};
     while (true) {
         try {
-            auto new_path = generateRandomString(current_new_random_path_len);
+            auto new_path = utils::generateRandomString(current_new_random_path_len);
             auto result = transaction.exec_prepared(PreparedStatements::INSERT_URL, new_path, url_to_shorten);
             if (result.affected_rows() == 1) {
                 transaction.commit();
@@ -53,29 +53,12 @@ void PostgresDBManager::shortenUrl(const std::string &new_path, const std::strin
             transaction.commit();
             return;
         } else {
-            throw DatabaseManagerException(fmt::format("URL {} is forbidden!", new_path));
+            throw DatabaseManagerException(fmt::format("Path {} is forbidden!", new_path));
         }
     } catch (const pqxx::unique_violation &e) {
-        throw DatabaseManagerException(fmt::format("URL {} is already taken!", new_path));
+        throw DatabaseManagerException(fmt::format("Path {} is already taken!", new_path));
     }
 
-}
-
-std::string PostgresDBManager::generateRandomString(std::size_t length) {
-    static auto &chrs = "0123456789"
-                        "abcdefghijklmnopqrstuvwxyz"
-                        "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-    thread_local static std::mt19937 rg{std::random_device{}()};
-    thread_local static std::uniform_int_distribution<std::string::size_type> pick(0, sizeof(chrs) - 2);
-
-    std::string random_str;
-    random_str.reserve(length);
-    while (length--) {
-        random_str += chrs[pick(rg)];
-    }
-
-    return random_str;
 }
 
 std::optional<std::string> PostgresDBManager::getOriginalUrl(const std::string &shortened_path) {
@@ -99,5 +82,8 @@ void PostgresDBManager::addForbiddenPath(const std::string &forbidden_path) {
     auto connection = connection_pool.getObject();
     pqxx::work transaction{*connection};
     auto result = transaction.exec_prepared(PreparedStatements::ADD_FORBIDDEN_PATH, forbidden_path);
+    if (result.affected_rows() > 0) {
+        spdlog::info("Added forbidden path: {}", forbidden_path);
+    }
     transaction.commit();
 }
