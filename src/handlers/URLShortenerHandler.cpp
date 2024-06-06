@@ -41,10 +41,10 @@ void URLShortenerHandler::doHandle(RequestData &request_data) {
 std::string URLShortenerHandler::shortenUrl(const RequestData &request_data) {
     auto url_to_shorten = request_data.tryGetHeaderValue(requests::headers::URL_TO_SHORTEN);
     addProtocolPrefix(url_to_shorten);
-    auto requested_custom_url = request_data.getHeaderValue(requests::headers::CUSTOM_PATH);
-    if (requested_custom_url.has_value()) {
-        db_manager->shortenUrl(*requested_custom_url, url_to_shorten);
-        return *requested_custom_url;
+    auto requested_custom_path = request_data.getHeaderValue(requests::headers::CUSTOM_PATH);
+    if (requested_custom_path.has_value()) {
+        db_manager->shortenUrl(*requested_custom_path, url_to_shorten);
+        return *requested_custom_path;
     } else {
         return db_manager->shortenUrl(url_to_shorten);
     }
@@ -70,7 +70,7 @@ bool URLShortenerHandler::validateRequest(RequestData &request_data) {
 bool URLShortenerHandler::containsRequiredHeader(RequestData &request_data) {
     auto url_to_shorten = request_data.getHeaderValue(requests::headers::URL_TO_SHORTEN);
     if (!url_to_shorten.has_value()) {
-        request_data.setResponse(web::http::status_codes::BadRequest, requests::errors::URL_TO_SHORTEN_MISSING);
+        request_data.setResponse(web::http::status_codes::BadRequest, requests::errors::HEADER_URL_TO_SHORTEN_MISSING);
     }
     return url_to_shorten.has_value();
 }
@@ -103,9 +103,19 @@ bool URLShortenerHandler::isCustomPathPermitted(RequestData &request_data) {
         return false;
     }
 
+    if (requested_custom_path->length() < MIN_CUSTOM_PATH_LENGTH) {
+        request_data.setResponse(web::http::status_codes::BadRequest, requests::errors::GIVEN_CUSTOM_PATH_IS_TOO_SHORT);
+        return false;
+    }
+
+    if (doesCustomPathStartWithAnyForbiddenCharacter(*requested_custom_path)) {
+        request_data.setResponse(web::http::status_codes::BadRequest, requests::errors::GIVEN_CUSTOM_PATH_STARTS_WITH_FORBIDDEN_CHARACTER);
+        return false;
+    }
+
     bool is_forbidden = db_manager->isForbidden(*requested_custom_path);
     if (is_forbidden) {
-        request_data.setResponse(web::http::status_codes::BadRequest, requests::errors::GIVEN_CUSTOM_URL_IS_FORBIDDEN);
+        request_data.setResponse(web::http::status_codes::BadRequest, requests::errors::GIVEN_CUSTOM_PATH_IS_FORBIDDEN);
     }
     return !is_forbidden;
 }
@@ -117,6 +127,11 @@ bool URLShortenerHandler::isURLDomainNotThisServersDomain(RequestData &request_d
         request_data.setResponse(web::http::status_codes::BadRequest, requests::errors::URL_TO_SHORTEN_CANNOT_LEAD_TO_THIS_SERVER);
     }
     return is_ok;
+}
+
+bool URLShortenerHandler::doesCustomPathStartWithAnyForbiddenCharacter(const std::string &custom_path) {
+    static std::string forbidden_start_characters{"!@#$%^&*()/\\';<>={}[]?|`"};
+    return forbidden_start_characters.contains(custom_path.front());
 }
 
 

@@ -18,6 +18,7 @@ private:
     std::string shortenUrl(const RequestData &request_data);
     void addProtocolPrefix(std::string& url);
     bool isCustomPathPermitted(RequestData &request_data);
+    bool doesCustomPathStartWithAnyForbiddenCharacter(const std::string& custom_path);
     std::string cutProtocolFromDomainAddress(const std::string& domain_address);
 
 
@@ -26,6 +27,7 @@ private:
     const std::string SERVER_DOMAIN_NAME_WITHOUT_PROTOCOL;
 public:
     static inline std::size_t MAX_CUSTOM_PATH_LENGTH{100};
+    static inline std::size_t MIN_CUSTOM_PATH_LENGTH{3};
     static inline std::string HANDLER_URI{"/shorten_url"};
 };
 
