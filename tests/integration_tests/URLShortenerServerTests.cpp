@@ -133,6 +133,18 @@ TEST_F(URLShortenerServerTests, badRequestWhenTriesToShortenURLThatLeadsToThisSe
     ASSERT_EQ(response.extract_string().get(), requests::errors::URL_TO_SHORTEN_CANNOT_LEAD_TO_THIS_SERVER);
 }
 
+TEST_F(URLShortenerServerTests, badRequestWhenTriesToShortenURLThatIsInvalid) {
+    web::http::client::http_client client{envs.SERVER_ADDRESS};
+    web::http::http_request request{web::http::methods::POST};
+    request.set_request_uri(URLShortenerHandler::HANDLER_URI);
+    request.headers().add(requests::headers::URL_TO_SHORTEN, "https://www.youtube.com/bifuqweuifwqunfqwuoi]");
+
+    auto response = client.request(request).get();
+
+    ASSERT_EQ(response.status_code(), web::http::status_codes::BadRequest);
+    ASSERT_EQ(response.extract_string().get(), requests::errors::GIVEN_URL_IS_INVALID);
+}
+
 TEST_F(URLShortenerServerTests, notFoundOnNonExistentURL) {
     web::http::client::http_client client{envs.SERVER_ADDRESS};
     web::http::http_request request{web::http::methods::GET};

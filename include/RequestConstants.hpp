@@ -7,7 +7,8 @@ namespace requests {
     }
     namespace errors {
         static inline auto HEADER_URL_TO_SHORTEN_MISSING{fmt::format("Header {} is missing!", headers::URL_TO_SHORTEN)};
-        static inline auto GIVEN_URL_IS_INVALID_OR_NOT_RESPONSIVE{"Given url is invalid or not responsive."};
+        static inline auto GIVEN_URL_IS_NOT_RESPONSIVE{"Given url is not responsive."};
+        static inline auto GIVEN_URL_IS_INVALID{"Given url is invalid."};
         static inline auto URL_TO_SHORTEN_CANNOT_LEAD_TO_THIS_SERVER{"Url to shorten cannot lead to this server."};
         static inline auto GIVEN_CUSTOM_PATH_IS_FORBIDDEN{"Given custom path is forbidden."};
         static inline auto GIVEN_PATH_ALREADY_EXISTS{"Given path already exists."};

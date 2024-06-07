@@ -17,9 +17,9 @@ void IRequestHandler::handle(RequestData &request_data) {
         doHandle(request_data);
         return;
     } catch (const std::exception &e) {
-        spdlog::critical("Handler's unhandled exception: {}", e.what());
+        spdlog::error("Handler's unhandled exception: {}", e.what());
     } catch (...) {
-        spdlog::critical("HTTP handler's unhandled exception...");
+        spdlog::error("HTTP handler's unhandled exception...");
     }
     request_data.setResponse(web::http::status_codes::InternalError, "Internal error");
 }

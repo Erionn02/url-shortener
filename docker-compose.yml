@@ -42,9 +42,10 @@ services:
       - "21377:80"
     volumes:
       - pg_data:/var/lib/pgadmin
+      - ./db_credentials.json:/pgadmin4/servers.json
 
   web-server:
-    image: tmp
+    image: web-server:latest
     build:
       dockerfile: ./Dockerfile
     environment:

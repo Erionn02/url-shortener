@@ -86,8 +86,12 @@ bool URLShortenerHandler::canRequestGivenURL(RequestData &request_data) {
         auto response = client.request(web::http::methods::GET).get();
         return true;
     } catch (const web::http::http_exception &e) {
-        spdlog::warn("Encountered an error when requesting url ({}): {}", url_to_shorten, e.what());
-        request_data.setResponse(web::http::status_codes::BadRequest, requests::errors::GIVEN_URL_IS_INVALID_OR_NOT_RESPONSIVE);
+        spdlog::warn("Encountered an http_exception when requesting url ({}): {}", url_to_shorten, e.what());
+        request_data.setResponse(web::http::status_codes::BadRequest, requests::errors::GIVEN_URL_IS_NOT_RESPONSIVE);
+        return false;
+    } catch (const web::uri_exception &e) {
+        spdlog::warn("Encountered an uri_exception when requesting url ({}): {}", url_to_shorten, e.what());
+        request_data.setResponse(web::http::status_codes::BadRequest, requests::errors::GIVEN_URL_IS_INVALID);
         return false;
     }
 }
