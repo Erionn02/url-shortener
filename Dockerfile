@@ -12,8 +12,7 @@ WORKDIR /url-shortener
 COPY ./conanfile.txt .
 RUN conan install conanfile.txt
 COPY . .
-
-RUN mkdir build && cd build && \
-    cmake -DCMAKE_BUILD_TYPE=Debug .. && cmake --build . -t url-shortener -- -j $(nproc --all)
+RUN mkdir -p build && cd build && \
+    cmake -DCMAKE_BUILD_TYPE=Debug .. && cmake --build . -- -j $(nproc --all)
 
 CMD ["./build/bin/url-shortener"]

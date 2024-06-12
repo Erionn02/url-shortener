@@ -15,14 +15,13 @@ services:
     image: postgres:14.5
     environment:
       POSTGRES_DB: "url-shortener"
-      POSTGRES_USER: "postgres"
-      POSTGRES_PASSWORD: "root"
+      POSTGRES_USER: $POSTGRES_USER
+      POSTGRES_PASSWORD: $POSTGRES_PASSWORD
     volumes:
       - db_data:/var/lib/postgresql/data
       - ./database_schema.sql:/docker-entrypoint-initdb.d/database_schema.sql
     healthcheck:
       test: pg_isready
-    # uncomment if you need to run tests
     ports:
       - "5432:5432"
     networks:
@@ -42,7 +41,6 @@ services:
       - "21377:80"
     volumes:
       - pg_data:/var/lib/pgadmin
-      - ./db_credentials.json:/pgadmin4/servers.json
 
   web-server:
     image: web-server:latest
@@ -57,8 +55,7 @@ services:
       POSTGRES_PASSWORD: "root"
       POSTGRES_ADDRESS: "172.26.1.2"
     ports:
-      - 2137:2137
-      #EXPOSE PORT 80 ON YOUR ROUTER AND FORWARD TRAFFIC TO DEVICE TO MAKE THE SERVICE PUBLIC
+      - 54321:2137
     networks:
       url-shortener:
         ipv4_address: 172.26.1.4
@@ -67,9 +64,3 @@ services:
         condition: service_healthy
     volumes:
       - ./web:/web_files
-
-  reverse-proxy:
-    image: caddy:latest
-    networks:
-      url-shortener:
-        ipv4_address: 172.26.1.5

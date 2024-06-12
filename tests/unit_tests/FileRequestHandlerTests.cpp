@@ -18,8 +18,8 @@ struct FileRequestHandlerTests : public testing::Test {
         return {path, main_website_filename};
     }
 
-    std::string readFileContent(const std::filesystem::path &path) {
-        std::ifstream file{path};
+    std::string readFileContent(const std::filesystem::path &file_path) {
+        std::ifstream file{file_path};
         std::stringstream ss;
         ss << file.rdbuf();
         return ss.str();
@@ -44,7 +44,7 @@ TEST_F(FileRequestHandlerTests, throwsOnFileInsteadOfDir) {
 }
 
 TEST_F(FileRequestHandlerTests, throwsOnNonExistentMainWebsiteFile) {
-    main_website_filename = std::filesystem::temp_directory_path() / "some_new_file";
+    main_website_filename = std::filesystem::temp_directory_path().string() + "/some_new_file";
     ASSERT_THROW(create(), RequestHandlerException);
 }
 
