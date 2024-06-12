@@ -8,8 +8,8 @@ while being in repository root directory.
 
 After successfully launching the project, go to the `http://127.0.0.1:54321:` in your browser and enjoy!
 You can check http://127.0.0.1:21377 which is pgadmin's website.
-Enter for login 'pg_admin_address@gmail.com'
-and password 'dont tell anyone'.
+Enter login `pg_admin_address@gmail.com`
+and password `dont tell anyone`.
 Add postgres server, remember to use `172.26.1.2` address and the credentials entered earlier.
 
 
