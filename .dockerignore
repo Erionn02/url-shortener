@@ -1,6 +1,8 @@
 .dockerignore
 Dockerfile
 docker-compose.yml
+CMakeUserPresets.json
 README.md
 .gitignore
 .git
+build

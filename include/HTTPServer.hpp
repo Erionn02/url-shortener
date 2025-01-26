@@ -16,13 +16,13 @@ public:
 class HTTPServer {
 public:
     explicit HTTPServer(const utility::string_t &url);
-    ~HTTPServer();
+    virtual ~HTTPServer();
     void addHandler(std::unique_ptr<IRequestHandler> request_handler);
     void open();
     void close();
 
-private:
-    void handleRequest(RequestData &request);
+protected:
+    virtual void handleRequest(const web::http::http_request &request);
     void checkAnyHandlerExists() const;
 
     std::vector<std::unique_ptr<IRequestHandler>> handlers;

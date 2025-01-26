@@ -29,7 +29,7 @@ std::string PostgresDBManager::shortenUrl(const std::string &url_to_shorten) {
     while (true) {
         try {
             auto new_path = utils::generateRandomString(current_new_random_path_len);
-            auto result = transaction.exec_prepared(PreparedStatements::INSERT_URL, new_path, url_to_shorten);
+            auto result = transaction.exec(pqxx::prepped{PreparedStatements::INSERT_URL}, {new_path, url_to_shorten});
             if (result.affected_rows() == 1) {
                 transaction.commit();
                 return new_path;
@@ -47,8 +47,8 @@ void PostgresDBManager::shortenUrl(const std::string &new_path, const std::strin
     auto connection = connection_pool.getObject();
     pqxx::work transaction{*connection};
     try {
-        auto result = transaction.exec_prepared(PreparedStatements::INSERT_URL, new_path,
-                                                url_to_shorten);
+        auto result = transaction.exec(pqxx::prepped{PreparedStatements::INSERT_URL}, {new_path,
+                                                url_to_shorten});
         if (result.affected_rows() == 1) {
             transaction.commit();
             return;
@@ -64,7 +64,7 @@ void PostgresDBManager::shortenUrl(const std::string &new_path, const std::strin
 std::optional<std::string> PostgresDBManager::getOriginalUrl(const std::string &shortened_path) {
     auto connection = connection_pool.getObject();
     pqxx::work transaction{*connection};
-    auto result = transaction.exec_prepared(PreparedStatements::GET_ORIGINAL_URL, shortened_path);
+    auto result = transaction.exec(pqxx::prepped{PreparedStatements::GET_ORIGINAL_URL}, {shortened_path});
     if (result.empty()) {
         return std::nullopt;
     }
@@ -74,14 +74,14 @@ std::optional<std::string> PostgresDBManager::getOriginalUrl(const std::string &
 bool PostgresDBManager::isForbidden(const std::string &new_path) {
     auto connection = connection_pool.getObject();
     pqxx::work transaction{*connection};
-    auto result = transaction.exec_prepared(PreparedStatements::IS_PATH_FORBIDDEN, new_path);
+    auto result = transaction.exec(pqxx::prepped{PreparedStatements::IS_PATH_FORBIDDEN}, {new_path});
     return result.at(0).at(0).as<std::size_t>() != 0;
 }
 
 void PostgresDBManager::addForbiddenPath(const std::string &forbidden_path) {
     auto connection = connection_pool.getObject();
     pqxx::work transaction{*connection};
-    auto result = transaction.exec_prepared(PreparedStatements::ADD_FORBIDDEN_PATH, forbidden_path);
+    auto result = transaction.exec(pqxx::prepped{PreparedStatements::ADD_FORBIDDEN_PATH}, {forbidden_path});
     if (result.affected_rows() > 0) {
         spdlog::info("Added forbidden path: {}", forbidden_path);
     }

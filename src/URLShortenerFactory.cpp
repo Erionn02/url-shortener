@@ -8,20 +8,28 @@ std::unique_ptr<HTTPServer> URLShortenerFactory::create() {
     return create(std::move(db_manager));
 }
 
-void URLShortenerFactory::addAllForbiddenPaths(PostgresDBManager &db_manager) {
-    db_manager.addForbiddenPath(APIVersionHandler::HANDLER_URI);
-    db_manager.addForbiddenPath(URLShortenerHandler::HANDLER_URI);
-    auto web_files_directory = getEnv(environment::WEB_FILES_DIRECTORY);
-    for(const auto& dir_entry: std::filesystem::directory_iterator(web_files_directory)) {
-        db_manager.addForbiddenPath(dir_entry.path().filename().string());
-    }
-}
-
 std::unique_ptr<HTTPServer> URLShortenerFactory::create(std::shared_ptr<PostgresDBManager> db_manager) {
     auto bind_address = getEnv(environment::HTTP_BIND_ADDRESS);
 
-    spdlog::info("Creating HTTP server with bind address {}", bind_address);
-    auto http_server = std::make_unique<HTTPServer>(std::move(bind_address));
+    std::unique_ptr<HTTPServer> http_server;
+    if (isEnvSet(environment::ENABLE_KAFKA) && getEnv(environment::ENABLE_KAFKA) == "true") {
+        const std::string brokers = getEnv(environment::KAFKA_BROKERS);;
+        std::string topic{getEnv(environment::KAFKA_TOPIC)};
+        spdlog::info("Creating KafkaReportingHttpServer with bind address: {}, topic: {}, brokers: {}", bind_address, topic, brokers);
+
+        const kafka::Properties props({
+            {"bootstrap.servers", brokers},
+            {"security.protocol", {"SASL_SSL"}},
+            {"sasl.mechanisms", {"PLAIN"}},
+            {"sasl.username", {environment::KAFKA_USER}},
+            {"sasl.password", {environment::KAFKA_PASSWORD}},
+        });
+        http_server =  std::make_unique<KafkaReportingHttpServer>(std::move(bind_address), props, topic);
+    } else {
+        spdlog::info("Creating HTTP HttpServerType with bind address {}", bind_address);
+        http_server = std::make_unique<HTTPServer>(std::move(bind_address));
+    }
+
     http_server->addHandler(createAPIVersionHandler());
     http_server->addHandler(createURLRedirectHandler(db_manager));
     http_server->addHandler(createFileRequestHandler());
@@ -29,6 +37,16 @@ std::unique_ptr<HTTPServer> URLShortenerFactory::create(std::shared_ptr<Postgres
     http_server->addHandler(createNotFoundHandler());
 
     return http_server;
+}
+
+
+void URLShortenerFactory::addAllForbiddenPaths(PostgresDBManager &db_manager) {
+    db_manager.addForbiddenPath(APIVersionHandler::HANDLER_URI);
+    db_manager.addForbiddenPath(URLShortenerHandler::HANDLER_URI);
+    auto web_files_directory = getEnv(environment::WEB_FILES_DIRECTORY);
+    for(const auto& dir_entry: std::filesystem::directory_iterator(web_files_directory)) {
+        db_manager.addForbiddenPath(dir_entry.path().filename().string());
+    }
 }
 
 std::shared_ptr<PostgresDBManager> URLShortenerFactory::createPostgresDatabaseManager() {

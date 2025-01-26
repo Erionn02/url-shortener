@@ -7,8 +7,7 @@ HTTPServer::HTTPServer(const utility::string_t &url) : listener(url) {
     listener.support(
             [this](const web::http::http_request &request) {
                 spdlog::debug("Got request, path: {}", request.relative_uri().path());
-                auto request_data = RequestData(request);
-                handleRequest(request_data);
+                handleRequest(request);
             });
     spdlog::info("HTTPServer started listening on {} url.", url);
 }
@@ -23,11 +22,12 @@ HTTPServer::~HTTPServer() {
     }
 }
 
-void HTTPServer::handleRequest(RequestData &request) {
+void HTTPServer::handleRequest(const web::http::http_request &request) {
+    auto request_data = RequestData(request);
     for (auto &handler: handlers) {
-        if (handler->canHandle(request)) {
-            handler->handle(request);
-            request.reply();
+        if (handler->canHandle(request_data)) {
+            handler->handle(request_data);
+            request_data.reply();
             return;
         }
     }

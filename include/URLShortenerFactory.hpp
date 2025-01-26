@@ -2,6 +2,7 @@
 
 #include "EnvironmentVariables.hpp"
 #include "HTTPServer.hpp"
+#include "KafkaReportingHttpServer.hpp"
 #include "handlers/FileRequestHandler.hpp"
 #include "handlers/URLShortenerHandler.hpp"
 #include "handlers/APIVersionHandler.hpp"
@@ -10,7 +11,6 @@
 #include "PostgresDBManager.hpp"
 
 #include <memory>
-
 
 
 class URLShortenerFactory {

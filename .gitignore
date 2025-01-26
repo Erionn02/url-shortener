@@ -4,6 +4,7 @@ build/
 # Prerequisites
 *.d
 
+CMakeUserPresets.json
 # Compiled Object files
 *.slo
 *.lo

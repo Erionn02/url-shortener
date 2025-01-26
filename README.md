@@ -6,7 +6,7 @@ After installing, execute:
 `POSTGRES_USER=postgres POSTGRES_PASSWORD=root docker compose up --build -d`
 while being in repository root directory.
 
-After successfully launching the project, go to the `http://127.0.0.1:54321:` in your browser and enjoy!
+After successfully launching the project, go to the `http://127.0.0.1:8080:` in your browser and enjoy!
 You can check http://127.0.0.1:21377 which is pgadmin's website.
 Enter login `pg_admin_address@gmail.com`
 and password `dont tell anyone`.

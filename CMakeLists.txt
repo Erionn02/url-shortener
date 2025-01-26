@@ -1,16 +1,30 @@
 cmake_minimum_required(VERSION 3.13)
-project(url-shortener)
-set(CMAKE_CXX_STANDARD 23)
 
-set(CONAN_SYSTEM_INCLUDES ON)
-include(${CMAKE_SOURCE_DIR}/cmake/CMakeHelpers.cmake)
 
-setup_conan()
-
-# cpprestsdk is stupid library and uses one-letter-macros in public headers
-# which leak everywhere and cause problems for example in templates with the types named with the same letter
+# cpprestsdk uses one-letter-macros in public headers
+# which leak everywhere and cause problems for example in templates with types named with the same letter as macros
 # this definition turns off those ugly macros
 add_definitions(-D_TURN_OFF_PLATFORM_STRING)
+include(${CMAKE_SOURCE_DIR}/cmake/CMakeHelpers.cmake)
+setup_conan()
+project(url-shortener)
+
+
+find_package(GTest REQUIRED)
+find_package(Boost REQUIRED)
+find_package(cpprestsdk REQUIRED)
+find_package(libpqxx REQUIRED)
+find_package(spdlog REQUIRED)
+find_package(fmt REQUIRED)
+find_package(OpenSSL REQUIRED)
+find_package(nlohmann_json REQUIRED)
+find_package(modern-cpp-kafka REQUIRED)
+
+include_directories(SYSTEM ${modern-cpp-kafka_INCLUDE_DIRS})
+
+set(CONAN_LIBS "gtest::gtest;boost::boost;OpenSSL::SSL;OpenSSL::Crypto;cpprestsdk::cpprestsdk;libpqxx::pqxx;spdlog::spdlog;fmt::fmt;RdKafka::rdkafka++;nlohmann_json::nlohmann_json")
+set(CMAKE_CXX_STANDARD 23)
+
 
 # Turn on with 'cmake -Dcoverage=ON ..'.
 option(coverage "Build for coverage report." OFF)
