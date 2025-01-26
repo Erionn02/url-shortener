@@ -3,6 +3,7 @@ build/
 .idea/
 # Prerequisites
 *.d
+.venv
 
 CMakeUserPresets.json
 # Compiled Object files

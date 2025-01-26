@@ -7,7 +7,8 @@ class UrlShortenerRecipe(ConanFile):
     generators = "CMakeDeps", "CMakeToolchain"
     default_options = {
         "librdkafka/*:ssl" : True,
-        "librdkafka/*:sasl" : True
+        "librdkafka/*:sasl" : True,
+        "openssl/*:shared" : True,
     }
     def requirements(self):
         self.requires("gtest/1.14.0")

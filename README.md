@@ -23,4 +23,5 @@ to make sure that everything works as intended :)
 Integration tests use real database and credentials there are hard coded (postgres:root),
 so make sure to use those if you want your integration tests to work.
 
-If this was to be deployed in real world, I would add some reverse-proxy with some cert, to encrypt the communication.
+Deployed just for fun under https://url-shortener-web-82157607216.europe-central2.run.app/
+I know that such long url is not very useful, but I wanted to show that I can deploy it in GCP :)

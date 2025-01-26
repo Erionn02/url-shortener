@@ -21,8 +21,8 @@ std::unique_ptr<HTTPServer> URLShortenerFactory::create(std::shared_ptr<Postgres
             {"bootstrap.servers", brokers},
             {"security.protocol", {"SASL_SSL"}},
             {"sasl.mechanisms", {"PLAIN"}},
-            {"sasl.username", {environment::KAFKA_USER}},
-            {"sasl.password", {environment::KAFKA_PASSWORD}},
+            {"sasl.username", {getEnv(environment::KAFKA_USER)}},
+            {"sasl.password", {getEnv(environment::KAFKA_PASSWORD)}},
         });
         http_server =  std::make_unique<KafkaReportingHttpServer>(std::move(bind_address), props, topic);
     } else {

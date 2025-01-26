@@ -43,7 +43,7 @@ services:
       - pg_data:/var/lib/pgadmin
 
   web-server:
-    image: web-server:latest
+    image: erionn/url-shortener-web:2.5
     build:
       context: .
       dockerfile: Dockerfile
@@ -55,6 +55,12 @@ services:
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "root"
       POSTGRES_ADDRESS: "172.26.1.2"
+
+      ENABLE_KAFKA: "true"
+      KAFKA_TOPIC: $KAFKA_TOPIC
+      KAFKA_BROKERS: $KAFKA_BROKERS
+      KAFKA_USER: $KAFKA_USER
+      KAFKA_PASSWORD: $KAFKA_PASSWORD
     ports:
       - 2137:2137
     networks:

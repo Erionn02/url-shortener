@@ -48,7 +48,6 @@ void FileRequestHandler::doHandle(RequestData &request_data) {
     response.headers().set_content_length(body.size());
     response.set_body(std::move(body));
     response.set_status_code(web::http::status_codes::OK);
-    spdlog::debug(response.to_string());
     request_data.setResponse(response);
 }
 
