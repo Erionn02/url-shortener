@@ -5,6 +5,10 @@
 
 #include <memory>
 
+/**
+ *  Request handler for shortening URLs.
+ */
+
 class URLShortenerHandler: public IRequestHandler {
 public:
     URLShortenerHandler(std::shared_ptr<DatabaseManager> db_manager, std::string server_domain_address);

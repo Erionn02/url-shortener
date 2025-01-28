@@ -4,6 +4,10 @@
 
 #include <filesystem>
 
+/**
+ *  Request handler for serving files from the filesystem.
+ */
+
 class FileRequestHandler : public IRequestHandler {
 public:
     FileRequestHandler(std::filesystem::path base_dir, std::string main_website_filename);
@@ -17,7 +21,7 @@ private:
     std::filesystem::path getFileFullPath(const RequestData &request_data) const;
 
     const std::filesystem::path BASE_DIR;
-    const std::filesystem::path MAIN_WEBSITE_FILE_PATH; // todo write actual main page
+    const std::filesystem::path MAIN_WEBSITE_FILE_PATH;
 };
 
 

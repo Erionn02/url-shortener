@@ -5,6 +5,10 @@
 #include "DatabaseManager.hpp"
 
 
+/**
+ *  Request handler for redirecting shortened URLs to their original form.
+ */
+
 class URLRedirectHandler: public IRequestHandler {
 public:
     explicit URLRedirectHandler(std::shared_ptr<DatabaseManager> db_manager);

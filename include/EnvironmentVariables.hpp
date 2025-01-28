@@ -32,4 +32,4 @@ namespace environment {
     static constexpr const char *KAFKA_USER{"KAFKA_USER"};
     static constexpr const char *KAFKA_PASSWORD{"KAFKA_PASSWORD"};
     static constexpr const char *KAFKA_TOPIC{"KAFKA_TOPIC"};
-};
+}

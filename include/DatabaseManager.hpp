@@ -10,7 +10,9 @@ public:
     using std::runtime_error::runtime_error;
 };
 
-
+/**
+ *  Interface for database manager.
+ */
 class DatabaseManager {
 public:
     virtual ~DatabaseManager() = default;

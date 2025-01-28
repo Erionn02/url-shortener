@@ -2,6 +2,10 @@
 
 #include "IRequestHandler.hpp"
 
+/**
+ *  Handler for getting the current API version.
+ */
+
 class APIVersionHandler : public IRequestHandler {
 public:
     APIVersionHandler();

@@ -5,7 +5,9 @@
 
 using ConnectionPool = ObjectPool<pqxx::connection>;
 
-
+/**
+ *  Class for managing database operations.
+ */
 class PostgresDBManager : public DatabaseManager {
 public:
     PostgresDBManager(const std::string& database_address, const std::string& pg_user, const std::string& pg_password, const std::string& database_name);

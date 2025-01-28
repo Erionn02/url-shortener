@@ -4,7 +4,9 @@
 
 #include <kafka/KafkaProducer.h>
 
-
+/**
+ *  HTTP server that listens on given URL and sends request metadata to Kafka.
+ */
 
 class KafkaReportingHttpServer : public HTTPServer {
 public:

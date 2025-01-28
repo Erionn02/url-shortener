@@ -12,6 +12,9 @@ public:
     using std::runtime_error::runtime_error;
 };
 
+/**
+ *  Interface for handling HTTP requests.
+ */
 class IRequestHandler {
 public:
     IRequestHandler() = default;

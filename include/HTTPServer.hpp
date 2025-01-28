@@ -13,6 +13,9 @@ public:
     using std::runtime_error::runtime_error;
 };
 
+/**
+ *  HTTP server that listens on given URL and handles requests with registered handlers.
+ */
 class HTTPServer {
 public:
     explicit HTTPServer(const utility::string_t &url);
